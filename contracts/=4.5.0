@@ -1,0 +1,42 @@
+Progress: resolved 0, reused 1, downloaded 0, added 0
+Progress: resolved 9, reused 9, downloaded 0, added 0
+Progress: resolved 12, reused 12, downloaded 0, added 0
+Progress: resolved 39, reused 21, downloaded 0, added 0
+Progress: resolved 214, reused 214, downloaded 0, added 0
+Progress: resolved 354, reused 345, downloaded 0, added 0
+Progress: resolved 442, reused 433, downloaded 0, added 0
+Progress: resolved 485, reused 476, downloaded 0, added 0
+Progress: resolved 516, reused 507, downloaded 0, added 0
+Progress: resolved 543, reused 534, downloaded 0, added 0
+Progress: resolved 546, reused 537, downloaded 0, added 0
+Packages: +230 -3
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+Progress: resolved 547, reused 538, downloaded 0, added 187
+Progress: resolved 547, reused 538, downloaded 0, added 230, done
+
+devDependencies:
++ @nomicfoundation/hardhat-chai-matchers 2.0.3
++ @nomicfoundation/hardhat-ethers 3.0.5
++ @nomicfoundation/hardhat-network-helpers 1.0.10
++ @nomicfoundation/hardhat-toolbox 4.0.0
++ @nomicfoundation/hardhat-verify 2.0.3
++ @typechain/ethers-v6 0.5.1
++ @typechain/hardhat 9.1.0
++ @types/chai 4.3.11
++ @types/mocha 10.0.6
++ @types/node 20.11.0
++ chai 4.4.1 (5.0.0 is available)
++ ethers 6.9.2
++ hardhat-gas-reporter 1.0.9
++ solidity-coverage 0.8.5
++ ts-node 10.9.2
++ typechain 8.3.2
++ typescript 5.3.3
+
+ WARN  Issues with peer dependencies found
+.
+└─┬ @chainlink/contracts 0.8.0
+  └─┬ @eth-optimism/contracts 0.5.40
+    └── ✕ unmet peer ethers@^5: found 6.9.2
+
+Done in 12.1s
