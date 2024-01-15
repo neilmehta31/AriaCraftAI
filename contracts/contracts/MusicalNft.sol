@@ -12,9 +12,10 @@ contract MusicalNFT is ERC721 {
 
     uint256 private _tokenId;
     
-    function mintMusicalNFT(address artist) public {
+    function mintMusicalNFT(address artist) public returns (uint256){
         _tokenId += 1;
         _safeMint(artist, _tokenId);
+        return _tokenId;
     }
 
     function transferOwnerShipTo(address payable newOwner) public {
