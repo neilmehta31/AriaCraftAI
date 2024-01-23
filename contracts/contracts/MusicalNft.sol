@@ -8,21 +8,33 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 contract MusicalNFT is ERC721 {
     address payable public owner;
 
+    error ERC721WrongContractOwner(address owner); 
+
     constructor() ERC721("MusicalNFT", "msclNFT") {}
 
-    uint256 private _tokenId;
+    uint256 private _nextTokenId;
     
-    function mintMusicalNFT(address artist) public returns (uint256){
-        _tokenId += 1;
-        _safeMint(artist, _tokenId);
-        return _tokenId;
+    function mintMusicalNFT(address user) public returns (uint256){
+        uint256 tokenId = _nextTokenId++;
+        _safeMint(user, tokenId, "data");
+        return tokenId;
     }
 
-    function transferOwnerShipTo(address payable newOwner) public {
-        owner = newOwner;
+    function transferMusicalNFT(uint256 tokenId, address from, address to) public {
+        safeTransferFrom(from, to, tokenId);
     }
 
-    function getOwner() public view returns (address) {
+    function transferContractOwnershipTo(address payable newContractOwner) public {
+        if( msg.sender != owner){
+            console.log("msg.sender : %s  current owner : %s  newProbableOwner : %s ", msg.sender, owner, newContractOwner);
+            revert ERC721WrongContractOwner(msg.sender);
+        }
+        owner = newContractOwner;
+    }
+
+    function getContractOwner() public view returns (address) {
         return owner;
     }
+
+
 }
