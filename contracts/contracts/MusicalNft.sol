@@ -10,7 +10,10 @@ contract MusicalNFT is ERC721 {
 
     error ERC721WrongContractOwner(address owner); 
 
-    constructor() ERC721("MusicalNFT", "msclNFT") {}
+    constructor(string memory name, string memory symbol) ERC721(name, symbol) {
+        name = name;
+        symbol = symbol;
+    }
 
     uint256 private _nextTokenId;
     
