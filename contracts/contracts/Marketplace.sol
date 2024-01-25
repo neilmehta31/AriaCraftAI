@@ -6,6 +6,10 @@ import "hardhat/console.sol";
 contract AriaCraftMarketPlace {
     constructor() {}
 
-    
+    function registerMusic(){}
 
+    function payMarketplaceOwnerOnregistration(){}
+
+    function generateMusic() {}
+    
 }
