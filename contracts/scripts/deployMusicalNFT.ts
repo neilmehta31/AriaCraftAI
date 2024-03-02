@@ -3,12 +3,18 @@ import { ethers } from "hardhat";
 async function main() {
    const arg1 = "MusicalNFT";
    const arg2 = "msclNFT";
-   const MyContract = await ethers.getContractFactory("MusicalNFT");
-   const myContract = await MyContract.deploy(arg1, arg2);
+   const MusicalNFT = await ethers.getContractFactory("MusicalNFT");
+   const musicalNFT = await MusicalNFT.deploy(arg1, arg2);
 
-   await myContract.waitForDeployment();
+   await musicalNFT.waitForDeployment();
+   const musicalNFTDeployedAddress = await musicalNFT.getAddress();
+   console.log(`musicalNFT contract deployed to ${musicalNFTDeployedAddress}`);
 
-   console.log(`VLX Token deployed to ${myContract.getAddress}`);
+   const MarketplaceContract = await ethers.getContractFactory("AriaCraftMarketPlace");
+   const marketplaceContract = await MarketplaceContract.deploy(musicalNFTDeployedAddress);
+   await marketplaceContract.waitForDeployment();
+   console.log(`Marketplace contract deployed to ${await marketplaceContract.getAddress()}`);
+   
 }
 
 main().catch((error) => {
