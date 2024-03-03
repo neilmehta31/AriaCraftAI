@@ -26,18 +26,16 @@ contract MusicalNFT is ERC721 {
     event EtherRecieved(address payer, uint256 amount);
 
     function mintMusicalNFT(
-        address recipient,
         string memory artistName,
         string memory genre,
         string memory linkToMusic
     ) public payable returns (uint256) {
-        require(msg.sender.balance >= 0.001 ether);
-
+        require(msg.sender.balance >= 0.0001 ether);
         // Minting the musicalNFT will require 0.001 ether to be sent to the owner as a fee/royalty!
         owner.transfer(0.001 ether);
 
         uint256 newTokenId = _counter;
-        _mint(recipient, newTokenId);
+        _mint(msg.sender, newTokenId);
         MusicalNFTMetadata memory metadata = MusicalNFTMetadata(
             artistName,
             genre,
