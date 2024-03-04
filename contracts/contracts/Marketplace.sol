@@ -88,15 +88,24 @@ contract AriaCraftMarketPlace {
         );
     }
 
-    function fetchActiveMarketItems() public view returns (uint256[] memory) {
-        // /Currently supporting only 100 listings.
-        uint256[] memory activeListings = new uint256[](100);
-        for (uint i = 0; i < 100; i++) {
-            if (_listing[i] != 0) {
-                activeListings[i] = _listing[i];
-            }
-        }
-        return activeListings;
+    // function fetchActiveMarketItems() =>
+    //  I think it is better to listen to the events from the smart
+    //  contract and then save them another database. This would save
+    //  me the repeated on-chain searching for the contracts. Edge case
+    //  when the DB is down should be handled in the contract.
+
+    function getItemDetails(
+        uint256 tokenId
+    )
+        public
+        view
+        returns (
+            string memory artistName,
+            string memory genre,
+            string memory linkToMusic
+        )
+    {
+        return _musicalNFT.getMusicMetadata(tokenId);
     }
 
     receive() external payable {}
