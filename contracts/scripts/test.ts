@@ -1,3 +1,3 @@
-var vall : String;
-vall = "hello world";
+
+var vall = "hello world";
 console.log(vall)

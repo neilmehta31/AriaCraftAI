@@ -25,14 +25,29 @@ contract MusicalNFT is ERC721 {
 
     event EtherRecieved(address payer, uint256 amount);
 
+    event MusicalMEtaData(MusicalNFTMetadata metadata, uint256 tokenId);
+
     function mintMusicalNFT(
         string memory artistName,
         string memory genre,
         string memory linkToMusic
     ) public payable returns (uint256) {
-        require(msg.sender.balance >= 0.0001 ether);
+        console.log(
+            "msg.sender.balance: %s and owner is %s",
+            msg.sender.balance,
+            owner
+        );
+        require(
+            msg.sender.balance >= 0.01 ether,
+            "Owner balance must be at least 0.01 ether"
+        );
+        require(
+            msg.value >= 0.01 ether,
+            "msg.value must be greater than 0.01 ethers"
+        );
         // Minting the musicalNFT will require 0.001 ether to be sent to the owner as a fee/royalty!
-        owner.transfer(0.001 ether);
+        transferSpecificAmount(payable(address(this)));
+        console.log("0.01 ethers transfered to the owner %s", owner);
 
         uint256 newTokenId = _counter;
         _mint(msg.sender, newTokenId);
@@ -42,8 +57,14 @@ contract MusicalNFT is ERC721 {
             linkToMusic
         );
         _musicMetadata[newTokenId] = metadata;
+        emit MusicalMEtaData(metadata, newTokenId);
         _counter += 1;
         return _counter;
+    }
+
+    function transferSpecificAmount(address payable recipient) public payable {
+        require(msg.value >= 0.01 ether, "Insufficient Ether sent");
+        payable(recipient).transfer(0.01 ether);
     }
 
     function getMusicMetadata(
@@ -84,16 +105,28 @@ contract MusicalNFT is ERC721 {
             );
             revert ERC721WrongContractOwner(msg.sender);
         }
+        console.log(
+            "msg.sender : %s  current owner : %s  New Owner : %s ",
+            msg.sender,
+            owner,
+            newContractOwner
+        );
         owner = newContractOwner;
     }
 
     receive() external payable {
-        emit EtherRecieved(msg.sender, msg.value);
+        // emit EtherRecieved(msg.sender, msg.value);
         console.log(
-            "%s Ether recieved from sender(%s) to owner($s)",
+            "%s Ether recieved from sender(%s) to owner(%s)",
             msg.value,
             msg.sender,
             owner
         );
+        // withdraw();
+    }
+
+    function withdraw() public {
+        require(msg.sender == owner);
+        payable(owner).transfer(address(this).balance);
     }
 }

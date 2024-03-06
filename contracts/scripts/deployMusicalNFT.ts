@@ -1,10 +1,10 @@
 import { ethers } from "hardhat";
 
 async function main() {
-   const arg1 = "MusicalNFT";
-   const arg2 = "msclNFT";
+   const [deployer] = await ethers.getSigners();
+   console.log("Deploying contracts with the account:", deployer.address);
    const MusicalNFT = await ethers.getContractFactory("MusicalNFT");
-   const musicalNFT = await MusicalNFT.deploy(arg1, arg2);
+   const musicalNFT = await MusicalNFT.deploy("MusicalNFT", "msclNFT");
 
    await musicalNFT.waitForDeployment();
    const musicalNFTDeployedAddress = await musicalNFT.getAddress();
