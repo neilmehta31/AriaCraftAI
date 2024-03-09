@@ -46,8 +46,12 @@ contract MusicalNFT is ERC721 {
             "msg.value must be greater than 0.01 ethers"
         );
         // Minting the musicalNFT will require 0.001 ether to be sent to the owner as a fee/royalty!
-        transferSpecificAmount(payable(address(this)));
-        console.log("0.01 ethers transfered to the owner %s", owner);
+        require(msg.value >= 0.01 ether, "Insufficient Ether sent");
+        payable(address(this)).transfer(0.01 ether);
+        console.log(
+            "0.01 ethers transfered to this contract address %s",
+            owner
+        );
 
         uint256 newTokenId = _counter;
         _mint(msg.sender, newTokenId);
@@ -60,11 +64,6 @@ contract MusicalNFT is ERC721 {
         emit MusicalMEtaData(metadata, newTokenId);
         _counter += 1;
         return _counter;
-    }
-
-    function transferSpecificAmount(address payable recipient) public payable {
-        require(msg.value >= 0.01 ether, "Insufficient Ether sent");
-        payable(recipient).transfer(0.01 ether);
     }
 
     function getMusicMetadata(
