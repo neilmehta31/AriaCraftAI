@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "hardhat/console.sol";
 import "./MusicalNft.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 // listItem: Creates a listing for an NFT owned by the caller, specifies the price, and emits a ItemListed event.
 // updateListing: Allows the seller to modify the price of an existing listing without canceling it.
@@ -19,15 +20,16 @@ import "./MusicalNft.sol";
 // getLowestPriceAvailable: Locates the lowest price among all listed NFTs.
 // getTopSellers: Discovers the top sellers ranked by their cumulative earnings.
 
-contract AriaCraftMarketPlace {
+contract AriaCraftMarketPlace is ReentrancyGuard {
     // Mapping from tokenId to its prices
     mapping(uint256 => uint256) private _listing;
-
+    address payable private _musicalNFTaddr;
     MusicalNFT private _musicalNFT;
 
     event PriceUpdated(uint256 token, uint256 price);
 
-    constructor(address _musicalNFTaddr) {
+    constructor(address musicalNFTDeployedAddr) payable {
+        _musicalNFTaddr = payable(musicalNFTDeployedAddr);
         _musicalNFT = MusicalNFT(payable(_musicalNFTaddr));
     }
 
@@ -35,13 +37,15 @@ contract AriaCraftMarketPlace {
         string memory artistName,
         string memory genre,
         string memory deployedMusicUrl,
-        uint256 price
-    ) public returns (uint256) {
+        uint256 price,
+        address payable caller
+    ) public payable returns (uint256) {
         console.log(
             "Your NFT at the url : %s is being minted. Owner of this NFT is : %s",
             deployedMusicUrl,
             msg.sender
         );
+        checkSender(caller);
         uint256 musicalNFTreferenceId = _musicalNFT.mintMusicalNFT(
             artistName,
             genre,
@@ -55,7 +59,10 @@ contract AriaCraftMarketPlace {
         return musicalNFTreferenceId;
     }
 
-    function updateListing(uint256 tokenId, uint256 updatedPrice) public {
+    function updateListing(
+        uint256 tokenId,
+        uint256 updatedPrice
+    ) public payable {
         _updateListItem(tokenId, updatedPrice);
     }
 
@@ -71,7 +78,7 @@ contract AriaCraftMarketPlace {
         console.log("Your musical NFT price has been listed for %s", price);
     }
 
-    function buyMusicalNFT(uint256 tokenId) public {
+    function buyMusicalNFT(uint256 tokenId) public payable {
         require(msg.sender != _musicalNFT.ownerOf(tokenId));
         require(msg.sender.balance >= _listing[tokenId]);
 
@@ -108,5 +115,17 @@ contract AriaCraftMarketPlace {
         return _musicalNFT.getMusicMetadata(tokenId);
     }
 
-    receive() external payable {}
+    receive() external payable {
+        // emit EtherRecieved(msg.sender, msg.value);
+        console.log(
+            "Marketplace contract: %s Ether recieved from sender(%s) to owner(%s)",
+            msg.value,
+            msg.sender
+        );
+        // withdraw();
+    }
+
+    function checkSender(address caller) private view {
+        require(caller == msg.sender, "Caller needs to be the msg.sender");
+    }
 }

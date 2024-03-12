@@ -5,6 +5,6 @@
     "outDir": "out",
     "sourceMap": true
   },
-  "include": ["./scripts"],
+  "include": ["./scripts", "test/*.ts"],
   "files": ["./hardhat.config.ts"]
 }
