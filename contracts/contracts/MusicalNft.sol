@@ -62,7 +62,7 @@ contract MusicalNFT is ERC721 {
         _musicMetadata[newTokenId] = metadata;
         emit MusicalMEtaData(metadata, newTokenId);
         _counter += 1;
-        return _counter;
+        return newTokenId;
     }
 
     function getMusicMetadata(
