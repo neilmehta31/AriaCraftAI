@@ -31,11 +31,6 @@ contract MusicalNFT is ERC721 {
         string memory genre,
         string memory linkToMusic
     ) public payable returns (uint256) {
-        console.log(
-            "msg.sender.balance: %s and owner is %s",
-            msg.sender.balance,
-            owner
-        );
         require(
             msg.sender.balance >= 0.01 ether,
             "Owner balance must be at least 0.01 ether"
@@ -46,11 +41,9 @@ contract MusicalNFT is ERC721 {
         );
         // Minting the musicalNFT will require 0.001 ether to be sent to the owner as a fee/royalty!
         require(msg.value >= 0.01 ether, "Insufficient Ether sent");
+        console.log("Payment init msg.value: ", msg.value);
         payable(address(this)).transfer(0.01 ether);
-        console.log(
-            "0.01 ethers transfered to this contract address %s",
-            owner
-        );
+        console.log("Payment done");
 
         uint256 newTokenId = _counter;
         _mint(msg.sender, newTokenId);
@@ -114,12 +107,12 @@ contract MusicalNFT is ERC721 {
 
     receive() external payable {
         // emit EtherRecieved(msg.sender, msg.value);
-        console.log(
-            "%s Ether recieved from sender(%s) to owner(%s)",
-            msg.value,
-            msg.sender,
-            owner
-        );
+        // console.log(
+        //     "%s Ether recieved from sender(%s) to owner(%s)",
+        //     msg.value,
+        //     msg.sender,
+        //     owner
+        // );
         // withdraw();
     }
 

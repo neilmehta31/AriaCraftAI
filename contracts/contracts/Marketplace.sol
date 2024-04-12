@@ -93,9 +93,7 @@ contract AriaCraftMarketPlace is ReentrancyGuard {
         itemCount++;
         _nft.transferFrom(msg.sender, address(this), _tokenId);
        
-        console.log("NOT paid to address 0.01 ethers");
         payable(address(this)).transfer(0.01 ether);
-        // console.log("paid to address 0.01 ethers");
        
         marketplaceItems[itemCount] = MarketplaceItem(
             itemCount,
@@ -198,12 +196,10 @@ contract AriaCraftMarketPlace is ReentrancyGuard {
     }
 
     receive() external payable {
-        // emit EtherRecieved(msg.sender, msg.value);
         console.log(
             "Marketplace contract: %s Ether recieved from sender(%s) to owner(%s)",
             msg.value,
             msg.sender
         );
-        // withdraw();
     }
 }
