@@ -4,7 +4,7 @@ import math
 import torchaudio
 import torch
 import soundfile as sf
-import time
+import uuid
 
 USE_DIFFUSION_DECODER = False
 # Using small model, better results would be obtained with `medium` or `large`.
@@ -103,8 +103,8 @@ class MusicGenaration :
         res = self.audioCarftModel.generate_continuation(self._get_bip_bip(0.125).expand(2, -1, -1), 32000, input_list, progress = True)
         output_file_path_list = []
         for i,out_file in enumerate(res):
-            timestr = time.strftime("%Y%m%d-%H%M%S")
-            out_file_path = f'TestMusic_Generated_{output_file_path.split(sep=".")[0]}_{timestr}.mp3'
+            uuidstr = (str(uuid.uuid4()))
+            out_file_path = f'TestMusic_Generated/{output_file_path.split(sep=".")[0]}_{uuidstr}.mp3'
             output_file_path_list.append(out_file_path)
             torchaudio.save(out_file_path, out_file.to(device='cpu'), 32000, format='mp3')
         return output_file_path_list
