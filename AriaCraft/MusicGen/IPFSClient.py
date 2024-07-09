@@ -17,7 +17,6 @@ class IPFSClient:
     
     def add(self, file):
         ipfsFileHash = self._ipfsClient.add(file)
-        self.info(self._ipfsClient.cat(ipfsFileHash['Hash']))
         return ipfsFileHash
 
     def close(self):
