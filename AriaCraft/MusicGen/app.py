@@ -1,10 +1,7 @@
-from flask import Flask, request, redirect, jsonify, make_response
-from flask_restful import Resource, Api
+from flask import Flask, request, jsonify, make_response
+from flask_restful import Api
 from flask_cors import CORS
-import os
 from musicGeneration import MusicGenaration
-from initUtils import *
-import torchaudio
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": "*"}}),
@@ -30,4 +27,4 @@ def generate():
 @app.errorhandler(404)
 def handle_404(e):
     # handle all other routes here
-    return make_response(jsonify({'data' : 'Not Found, but we HANDLED IT'}), 200)
+    return make_response(jsonify({'data' : 'Not Found, but I have HANDLED IT'}), 200)

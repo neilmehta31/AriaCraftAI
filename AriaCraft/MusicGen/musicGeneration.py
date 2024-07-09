@@ -5,14 +5,7 @@ import torchaudio
 import torch
 import soundfile as sf
 import uuid
-
-USE_DIFFUSION_DECODER = False
-# Using small model, better results would be obtained with `medium` or `large`.
-model = MusicGen.get_pretrained('facebook/musicgen-small')
-if USE_DIFFUSION_DECODER:
-    mbd = MultiBandDiffusion.get_mbd_musicgen()
-
-model.set_generation_params(use_sampling=True, top_k=250, duration=30)
+from IPFSClient import IPFSClient, Logger
 
 class MusicGenaration :
 
@@ -25,30 +18,8 @@ class MusicGenaration :
         top_k=250,
         duration=30
     )
-    
-    # def __init__(self) :
-        # USE_DIFFUSION_DECODER = False
-        # audioCarftModel = MusicGen.get_pretrained('facebook/musicgen-small')
-        # if USE_DIFFUSION_DECODER:
-        #     mbd = MultiBandDiffusion.get_mbd_musicgen()
-        # audioCarftModel.set_generation_params(
-        #     use_sampling=True,
-        #     top_k=250,
-        #     duration=30
-        # )
-        # self.audioCarftModel = audioCarftModel
-        # try:
-        #     res = model.generate_continuation(
-        #         self._get_bip_bip(0.125).expand(2, -1, -1), 
-        #         32000, ['Beautiful jazz that to be enjoyed under a tree in rain', 
-        #                 'Heartful EDM with beautiful synths and chords'], 
-        #         progress=True)
-        #     res = torch.tensor(res)
-        #     for out_res in res:
-        #         torchaudio.save("output.mp3", out_res.to(device="cpu"), 32000)
-        #     # self.model = model
-        # except:
-        #     raise Exception("Model failed successfully ;(")
+    ipfsClient = IPFSClient()
+    logger = Logger()
 
     def _get_bip_bip(self, bip_duration=0.125, frequency=440,
                     duration=0.5, sample_rate=32000, device="cuda"):
@@ -101,10 +72,19 @@ class MusicGenaration :
 
     def generate_continuation(self, input_list, output_file_path='output.mp3'):
         res = self.audioCarftModel.generate_continuation(self._get_bip_bip(0.125).expand(2, -1, -1), 32000, input_list, progress = True)
-        output_file_path_list = []
+        ipfsFileHashes = []
         for i,out_file in enumerate(res):
-            uuidstr = (str(uuid.uuid4()))
-            out_file_path = f'TestMusic_Generated/{output_file_path.split(sep=".")[0]}_{uuidstr}.mp3'
-            output_file_path_list.append(out_file_path)
-            torchaudio.save(out_file_path, out_file.to(device='cpu'), 32000, format='mp3')
-        return output_file_path_list
+            try: 
+                uuidstr = (str(uuid.uuid4()))
+                out_file_path = f'/home/neil/Documents/AriaCraftAI/AriaCraft/MusicGen/TestMusic_Generated/{output_file_path.split(sep=".")[0]}_{uuidstr}.mp3'
+                torchaudio.save(out_file_path, out_file.to(device='cpu'), 32000, format='mp3')
+                self.logger.info(f'generated audio save at : {out_file_path}')
+                ipfsSavedRes = self.ipfsClient.add(out_file_path)
+                self.logger.info('ipfs file added hash :' +  ipfsSavedRes['Hash'])
+                ipfsFileHashes.append(ipfsSavedRes['Hash'])
+            except Exception as e: 
+                self.logger.error(e)
+                continue
+        return ipfsFileHashes
+
+        
