@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  musicgen:
+    build:
+      context: ./AriaCraft/MusicGen
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+
+  nft-marketplace-ui:
+    depends_on:
+      - musicgen
+    build:
+      context: ./AriaCraft/NFT-Marketplace-UI
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  ipfs-daemon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+      - "8080:8080"
+    networks:
+      - app-network
+
+
+  contracts:
+    depends_on:
+      - ipfs-daemon
+    build:
+      context: ./contracts
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+networks:
+  app-network:
